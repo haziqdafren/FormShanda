@@ -44,7 +44,7 @@
   
         <div class="form-group">  
             <label for="recipient">Nama Penerima:</label>  
-            <input type="text" class="form-control" id="recipient" placeholder="Contoh: Rizka Malynda" required>  
+            <input type="text" class="form-control" id="recipient" placeholder="Contoh: Ershanda Juniarta" required>  
         </div>  
   
         <div class="form-group">  
@@ -102,7 +102,6 @@
                             <input type="text" class="form-control" id="flightDuration" placeholder="Contoh: 17" required readonly>  
                         </div>  
   
-                        <!-- New input for ID Card -->  
                         <div class="form-group">  
                             <label for="idCard">ID Card:</label>  
                             <input type="text" class="form-control" id="idCard" value="July 2027">  
@@ -110,7 +109,7 @@
                     </div>  
                 </div>  
             </div>  
-        </div>
+        </div>  
   
         <button type="button" class="btn btn-primary" onclick="generateMessage()">Generate Pesan</button>  
     </form>  
@@ -209,7 +208,7 @@
         const expMedex = document.getElementById('expMedex').value;  
         const expReccA320 = document.getElementById('expReccA320').value;  
         const flightDuration = document.getElementById('flightDuration').value;  
-        const idCard = document.getElementById('idCard').value;
+        const idCard = document.getElementById('idCard').value;  
   
         let message = `Selamat ${timeOfDay} ${gender} ${recipient},\n`;  
         message += `Mohon maaf mengganggu waktu istirahat nya ${gender}, izin konfirmasi ${gender} perkenalkan saya :\n\n`;  
