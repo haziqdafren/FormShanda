@@ -1,0 +1,300 @@
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Form Izin Ikutan</title>  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">  
+    <style>  
+        body {  
+            font-family: Arial, sans-serif;  
+            margin: 20px;  
+            background-color: #f8f9fa;  
+        }  
+        .output {  
+            margin-top: 20px;  
+            border: 1px solid #ccc;  
+            padding: 10px;  
+            background-color: #ffffff;  
+            border-radius: 5px;  
+        }  
+    </style>  
+</head>  
+<body>  
+  
+<div class="container mt-5">  
+    <h2 class="text-center">Form Izin Ikutan</h2>  
+    <form id="messageForm">  
+        <div class="form-group">  
+            <label for="timeOfDay">Waktu:</label>  
+            <select class="form-control" id="timeOfDay" required>  
+                <option value="pagi">Pagi</option>  
+                <option value="siang">Siang</option>  
+                <option value="malam">Malam</option>  
+            </select>  
+        </div>  
+  
+        <div class="form-group">  
+            <label for="gender">Pilih:</label>  
+            <select class="form-control" id="gender" required>  
+                <option value="mba">Mba</option>  
+                <option value="mas">Mas</option>  
+            </select>  
+        </div>  
+  
+        <div class="form-group">  
+            <label for="recipient">Nama Penerima:</label>  
+            <input type="text" class="form-control" id="recipient" placeholder="Contoh: Rizka Malynda" required>  
+        </div>  
+  
+        <div class="form-group">  
+            <label for="day">Hari:</label>  
+            <input type="text" class="form-control" id="day" placeholder="Contoh: pertama" required>  
+        </div>  
+  
+        <div class="form-group">  
+            <label for="duration">Jumlah Hari:</label>  
+            <select class="form-control" id="duration" required onchange="toggleRouteInputs()">  
+                <option value="">Pilih</option>  
+                <option value="besok">Besok</option>  
+                <option value="1">1 hari kedepan</option>  
+                <option value="2">2 hari kedepan</option>  
+                <option value="3">3 hari kedepan</option>  
+                <option value="4">4 hari kedepan</option>  
+                <option value="5">5 hari kedepan</option>  
+                <option value="6">6 hari kedepan</option>  
+            </select>  
+        </div>  
+  
+        <div id="dateAndRouteInputs">  
+            <div class="route-input" id="multiDayInput">  
+                <label for="startDate">Tanggal Awal:</label>  
+                <input type="date" class="form-control" id="startDate" required onchange="updateDates()">  
+                <div id="multiRouteInputs"></div>  
+            </div>  
+        </div>  
+  
+        <!-- Accordion for additional information -->  
+        <div class="accordion" id="expAccordion">  
+            <div class="card">  
+                <div class="card-header" id="headingOne">  
+                    <h2 class="mb-0">  
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">  
+                            Informasi Tambahan (Expeditions Medex, Recc A320 dan Lama Terbang)  
+                        </button>  
+                    </h2>  
+                </div>  
+  
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#expAccordion">  
+                    <div class="card-body">  
+                        <div class="form-group">  
+                            <label for="expMedex">Exp Medex:</label>  
+                            <input type="text" class="form-control" id="expMedex" value="10 Oktober 2025">  
+                        </div>  
+  
+                        <div class="form-group">  
+                            <label for="expReccA320">Exp Recc A320:</label>  
+                            <input type="text" class="form-control" id="expReccA320" value="30 November 2025">  
+                        </div>  
+  
+                        <div class="form-group">  
+                            <label for="flightDuration">Lama Terbang (dalam bulan):</label>  
+                            <input type="text" class="form-control" id="flightDuration" placeholder="Contoh: 17" required readonly>  
+                        </div>  
+  
+                        <!-- New input for ID Card -->  
+                        <div class="form-group">  
+                            <label for="idCard">ID Card:</label>  
+                            <input type="text" class="form-control" id="idCard" value="July 2027">  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
+        </div>
+  
+        <button type="button" class="btn btn-primary" onclick="generateMessage()">Generate Pesan</button>  
+    </form>  
+  
+    <div class="output" id="outputMessage"></div>  
+    <button id="copyButton" class="btn btn-secondary" style="display:none;" onclick="copyToClipboard()">Salin Pesan</button>  
+</div>  
+  
+<script>  
+    // Set the start date for flight  
+    const flightStartDate = new Date('2023-07-01'); // Set to July 1, 2023  
+  
+    function updateFlightDuration() {  
+        const currentDate = new Date();  
+        const monthsDiff = (currentDate.getFullYear() - flightStartDate.getFullYear()) * 12 + (currentDate.getMonth() - flightStartDate.getMonth());  
+        document.getElementById('flightDuration').value = monthsDiff; // Update the flight duration  
+    }  
+  
+    function toggleRouteInputs() {  
+        const duration = document.getElementById('duration').value;  
+        const multiDayInput = document.getElementById('multiDayInput');  
+  
+        // Show the multiDayInput for all cases  
+        multiDayInput.style.display = 'block';  
+  
+        // Clear the start date if "besok" or "1 hari kedepan" is selected  
+        if (duration === "besok" || duration === "1") {  
+            document.getElementById('startDate').value = ''; // Clear previous value  
+        }  
+    }  
+  
+    function updateDates() {  
+        const duration = document.getElementById('duration').value;  
+        const startDate = new Date(document.getElementById('startDate').value);  
+        const multiRouteInputs = document.getElementById('multiRouteInputs');  
+  
+        // Clear previous route inputs  
+        multiRouteInputs.innerHTML = '';  
+  
+        // Determine the number of days to display  
+        const numDays = (duration === "besok" || duration === "1") ? 1 : parseInt(duration);  
+  
+        for (let i = 0; i < numDays; i++) {  
+            const currentDate = new Date(startDate);  
+            currentDate.setDate(startDate.getDate() + i); // Increment date  
+  
+            const routeDiv = document.createElement('div');  
+            routeDiv.classList.add('route-group');  
+            routeDiv.innerHTML = `  
+                <label for="date${i + 1}">Tanggal Hari ${i + 1}:</label>  
+                <input type="text" class="form-control" value="${currentDate.getDate()} ${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}" readonly>  
+                <label for="routeCount${i + 1}">Jumlah Rute:</label>  
+                <select class="form-control" id="routeCount${i + 1}" onchange="toggleMultiRouteInput(${i + 1})">  
+                    <option value="1">1 Rute</option>  
+                    <option value="2">2 Rute</option>  
+                    <option value="3">3 Rute</option>  
+                    <option value="4">4 Rute</option>  
+                    <option value="5">5 Rute</option>  
+                    <option value="6">6 Rute</option>  
+                </select>  
+                <div id="multiRouteInputs${i + 1}"></div>  
+            `;  
+            multiRouteInputs.appendChild(routeDiv);  
+  
+            // Automatically set 1 route input  
+            toggleMultiRouteInput(i + 1);  
+        }  
+    }  
+  
+    function toggleMultiRouteInput(dayIndex) {  
+        const count = document.getElementById(`routeCount${dayIndex}`).value;  
+        const multiRouteInputs = document.getElementById(`multiRouteInputs${dayIndex}`);  
+        multiRouteInputs.innerHTML = ''; // Clear previous inputs  
+  
+        for (let i = 0; i < count; i++) {  
+            const routeInputDiv = document.createElement('div');  
+            routeInputDiv.innerHTML = `  
+                <label for="route${dayIndex}_${i + 1}">Rute:</label>  
+                <input type="text" class="form-control" id="route${dayIndex}_${i + 1}" placeholder="Masukkan rute ${i + 1}" required>  
+            `;  
+            multiRouteInputs.appendChild(routeInputDiv);  
+        }  
+    }  
+  
+    function formatDate(date) {  
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };  
+        return date.toLocaleDateString('id-ID', options);  
+    }  
+  
+    function generateMessage() {  
+        const gender = document.getElementById('gender').value;  
+        const recipient = document.getElementById('recipient').value;  
+        const day = document.getElementById('day').value;  
+        const timeOfDay = document.getElementById('timeOfDay').value;  
+        const duration = document.getElementById('duration').value;  
+        const expMedex = document.getElementById('expMedex').value;  
+        const expReccA320 = document.getElementById('expReccA320').value;  
+        const flightDuration = document.getElementById('flightDuration').value;  
+        const idCard = document.getElementById('idCard').value;
+  
+        let message = `Selamat ${timeOfDay} ${gender} ${recipient},\n`;  
+        message += `Mohon maaf mengganggu waktu istirahat nya ${gender}, izin konfirmasi ${gender} perkenalkan saya :\n\n`;  
+        message += `Nama : Ershanda Juniarta\nNo ID : 231542\nBatch : 612 IU / SJV 32\n\n`;  
+  
+        if (duration === "besok") {  
+            const startDate = new Date();  
+            message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan untuk besok tepatnya pada tanggal ${formatDate(startDate)} dengan rute:\n\n`;  
+  
+            const routeInputs = [];  
+            const routeCount = document.getElementById(`routeCount1`).value;  
+  
+            for (let j = 0; j < routeCount; j++) {  
+                routeInputs.push(document.getElementById(`route1_${j + 1}`).value);  
+            }  
+  
+            routeInputs.forEach((route) => {  
+                message += `• ${route}\n`;  
+            });  
+            message += '\n';  
+        } else if (duration === "1") {  
+            const startDate = new Date();  
+            message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan untuk 1 hari kedepan tepatnya pada tanggal ${formatDate(startDate)} dengan rute:\n\n`;  
+  
+            const routeInputs = [];  
+            const routeCount = document.getElementById(`routeCount1`).value;  
+  
+            for (let j = 0; j < routeCount; j++) {  
+                routeInputs.push(document.getElementById(`route1_${j + 1}`).value);  
+            }  
+  
+            routeInputs.forEach((route) => {  
+                message += `• ${route}\n`;  
+            });  
+            message += '\n';  
+        } else {  
+            const startDate = new Date(document.getElementById('startDate').value);  
+            message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan sejak besok pada tanggal ${formatDate(startDate)} untuk ${duration} hari kedepan ${gender} dengan rute:\n\n`;  
+  
+            const numDays = parseInt(duration); // Convert duration to a number  
+            for (let i = 0; i < numDays; i++) {  
+                const routeInputs = [];  
+                const routeCount = document.getElementById(`routeCount${i + 1}`).value;  
+  
+                for (let j = 0; j < routeCount; j++) {  
+                    routeInputs.push(document.getElementById(`route${i + 1}_${j + 1}`).value);  
+                }  
+  
+                const currentDate = new Date(startDate);  
+                currentDate.setDate(startDate.getDate() + i);  
+                message += `Pada tanggal ${formatDate(currentDate)}:\n`;  
+                routeInputs.forEach((route) => {  
+                    message += `  - ${route}\n`;  
+                });  
+                message += '\n';  
+            }  
+        }  
+  
+        message += `Berikut saya lampirkan dokumen :\n`;  
+        message += `Nama : Ershanda Juniarta\nNo ID : 231542\nNo FAC : 23-0675\nExp medex : ${expMedex}\n`;  
+        message += `Exp recc A320 : ${expReccA320}\nExp passport : 31 Januari 2033\nID card : ${idCard}\n`; // Tampilkan ID Card  
+        message += `Vaksin : Vaksin ke 3 booster\nLama terbang : ${flightDuration} Bulan\n\n`;  
+        message += `Semua Dokumen saya lengkap ${gender} SEP, OM dan Notice terbaru sudah saya download ${gender}. Mohon arahan serta bimbingannya ${gender}, dan saya izin ikutan yaa ${gender}🙏🏻\n`;  
+        message += `Terimakasih dan Selamat istirahat ${gender}🙏🏻`;  
+  
+        document.getElementById('outputMessage').innerText = message;  
+        document.getElementById('copyButton').style.display = 'block'; // Show copy button  
+    }  
+  
+    function copyToClipboard() {  
+        const outputMessage = document.getElementById('outputMessage').innerText;  
+        navigator.clipboard.writeText(outputMessage).then(() => {  
+            alert('Pesan telah disalin ke clipboard!');  
+        }, (err) => {  
+            console.error('Gagal menyalin: ', err);  
+        });  
+    }  
+  
+    // Call this function to update the flight duration on page load  
+    updateFlightDuration();  
+</script>  
+  
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>  
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>  
+  
+</body>  
+</html>  
