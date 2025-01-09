@@ -199,84 +199,86 @@
         return date.toLocaleDateString('id-ID', options);  
     }  
   
-    function generateMessage() {  
-        const gender = document.getElementById('gender').value;  
-        const recipient = document.getElementById('recipient').value;  
-        const day = document.getElementById('day').value;  
-        const timeOfDay = document.getElementById('timeOfDay').value;  
-        const duration = document.getElementById('duration').value;  
-        const expMedex = document.getElementById('expMedex').value;  
-        const expReccA320 = document.getElementById('expReccA320').value;  
-        const flightDuration = document.getElementById('flightDuration').value;  
-        const idCard = document.getElementById('idCard').value;  
+    function generateMessage() {    
+    const gender = document.getElementById('gender').value;    
+    const recipient = document.getElementById('recipient').value;    
+    const day = document.getElementById('day').value;    
+    const timeOfDay = document.getElementById('timeOfDay').value;    
+    const duration = document.getElementById('duration').value;    
+    const expMedex = document.getElementById('expMedex').value;    
+    const expReccA320 = document.getElementById('expReccA320').value;    
+    const flightDuration = document.getElementById('flightDuration').value;    
+    const idCard = document.getElementById('idCard').value;    
   
-        let message = `Selamat ${timeOfDay} ${gender} ${recipient},\n`;  
-        message += `Mohon maaf mengganggu waktu istirahat nya ${gender}, izin konfirmasi ${gender} perkenalkan saya :\n\n`;  
-        message += `Nama : Ershanda Juniarta\nNo ID : 231542\nBatch : 612 IU / SJV 32\n\n`;  
+    let message = `Selamat ${timeOfDay} ${gender} ${recipient},\n`;    
+    message += `Mohon maaf mengganggu waktu istirahat nya ${gender}, izin konfirmasi ${gender} perkenalkan saya :\n\n`;    
+    message += `Nama : Ershanda Juniarta\nNo ID : 231542\nBatch : 612 IU / SJV 32\n\n`;    
   
-        if (duration === "besok") {  
-            const startDate = new Date();  
-            message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan untuk besok tepatnya pada tanggal ${formatDate(startDate)} dengan rute:\n\n`;  
+    const startDate = new Date(); // Set to current date  
   
-            const routeInputs = [];  
-            const routeCount = document.getElementById(`routeCount1`).value;  
+    if (duration === "besok") {    
+        startDate.setDate(startDate.getDate() + 1); // Set to tomorrow  
+        message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan untuk besok tepatnya pada tanggal ${formatDate(startDate)} dengan rute:\n\n`;    
   
-            for (let j = 0; j < routeCount; j++) {  
-                routeInputs.push(document.getElementById(`route1_${j + 1}`).value);  
-            }  
+        const routeInputs = [];    
+        const routeCount = document.getElementById(`routeCount1`).value;    
   
-            routeInputs.forEach((route) => {  
-                message += `• ${route}\n`;  
-            });  
-            message += '\n';  
-        } else if (duration === "1") {  
-            const startDate = new Date();  
-            message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan untuk 1 hari kedepan tepatnya pada tanggal ${formatDate(Date)} dengan rute:\n\n`;  
+        for (let j = 0; j < routeCount; j++) {    
+            routeInputs.push(document.getElementById(`route1_${j + 1}`).value);    
+        }    
   
-            const routeInputs = [];  
-            const routeCount = document.getElementById(`routeCount1`).value;  
+        routeInputs.forEach((route) => {    
+            message += `• ${route}\n`;    
+        });    
+        message += '\n';    
+    } else if (duration === "1") {    
+        message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan untuk 1 hari kedepan tepatnya pada tanggal ${formatDate(startDate)} dengan rute:\n\n`;    
   
-            for (let j = 0; j < routeCount; j++) {  
-                routeInputs.push(document.getElementById(`route1_${j + 1}`).value);  
-            }  
+        const routeInputs = [];    
+        const routeCount = document.getElementById(`routeCount1`).value;    
   
-            routeInputs.forEach((route) => {  
-                message += `• ${route}\n`;  
-            });  
-            message += '\n';  
-        } else {  
-            const startDate = new Date(document.getElementById('startDate').value);  
-            message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan sejak besok pada tanggal ${formatDate(startDate)} untuk ${duration} hari kedepan ${gender} dengan rute:\n\n`;  
+        for (let j = 0; j < routeCount; j++) {    
+            routeInputs.push(document.getElementById(`route1_${j + 1}`).value);    
+        }    
   
-            const numDays = parseInt(duration); // Convert duration to a number  
-            for (let i = 0; i < numDays; i++) {  
-                const routeInputs = [];  
-                const routeCount = document.getElementById(`routeCount${i + 1}`).value;  
+        routeInputs.forEach((route) => {    
+            message += `• ${route}\n`;    
+        });    
+        message += '\n';    
+    } else {    
+        const selectedStartDate = new Date(document.getElementById('startDate').value);    
+        message += `Izin ikutan ${gender}, besok duty hari ${day} saya ${gender} dan saya izin ikutan sejak besok pada tanggal ${formatDate(selectedStartDate)} untuk ${duration} hari kedepan ${gender} dengan rute:\n\n`;    
   
-                for (let j = 0; j < routeCount; j++) {  
-                    routeInputs.push(document.getElementById(`route${i + 1}_${j + 1}`).value);  
-                }  
+        const numDays = parseInt(duration); // Convert duration to a number    
+        for (let i = 0; i < numDays; i++) {    
+            const routeInputs = [];    
+            const routeCount = document.getElementById(`routeCount${i + 1}`).value;    
   
-                const currentDate = new Date(startDate);  
-                currentDate.setDate(startDate.getDate() + i);  
-                message += `Pada tanggal ${formatDate(currentDate)}:\n`;  
-                routeInputs.forEach((route) => {  
-                    message += `  - ${route}\n`;  
-                });  
-                message += '\n';  
-            }  
-        }  
+            for (let j = 0; j < routeCount; j++) {    
+                routeInputs.push(document.getElementById(`route${i + 1}_${j + 1}`).value);    
+            }    
   
-        message += `Berikut saya lampirkan dokumen :\n`;  
-        message += `Nama : Ershanda Juniarta\nNo ID : 231542\nNo FAC : 23-0675\nExp medex : ${expMedex}\n`;  
-        message += `Exp recc A320 : ${expReccA320}\nExp passport : 31 Januari 2033\nID card : ${idCard}\n`; // Tampilkan ID Card  
-        message += `Vaksin : Vaksin ke 3 booster\nLama terbang : ${flightDuration} Bulan\n\n`;  
-        message += `Semua Dokumen saya lengkap ${gender} SEP, OM dan Notice terbaru sudah saya download ${gender}. Mohon arahan serta bimbingannya ${gender}, dan saya izin ikutan yaa ${gender}🙏🏻\n`;  
-        message += `Terimakasih dan Selamat istirahat ${gender}🙏🏻`;  
+            const currentDate = new Date(selectedStartDate);    
+            currentDate.setDate(selectedStartDate.getDate() + i);    
+            message += `Pada tanggal ${formatDate(currentDate)}:\n`;    
+            routeInputs.forEach((route) => {    
+                message += `  - ${route}\n`;    
+            });    
+            message += '\n';    
+        }    
+    }    
   
-        document.getElementById('outputMessage').innerText = message;  
-        document.getElementById('copyButton').style.display = 'block'; // Show copy button  
-    }  
+    message += `Berikut saya lampirkan dokumen :\n`;    
+    message += `Nama : Ershanda Juniarta\nNo ID : 231542\nNo FAC : 23-0675\nExp medex : ${expMedex}\n`;    
+    message += `Exp recc A320 : ${expReccA320}\nExp passport : 31 Januari 2033\nID card : ${idCard}\n`; // Tampilkan ID Card    
+    message += `Vaksin : Vaksin ke 3 booster\nLama terbang : ${flightDuration} Bulan\n\n`;    
+    message += `Semua Dokumen saya lengkap ${gender} SEP, OM dan Notice terbaru sudah saya download ${gender}. Mohon arahan serta bimbingannya ${gender}, dan saya izin ikutan yaa ${gender}🙏🏻\n`;    
+    message += `Terimakasih dan Selamat istirahat ${gender}🙏🏻`;    
+  
+    document.getElementById('outputMessage').innerText = message;    
+    document.getElementById('copyButton').style.display = 'block'; // Show copy button    
+}  
+
   
     function copyToClipboard() {  
         const outputMessage = document.getElementById('outputMessage').innerText;  
